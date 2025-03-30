@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Sensor Data</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(fetchData);
+
+        function fetchData() {
+            fetch('/data')
+                .then(response => response.json())
+                .then(data => drawCharts(data));
+        }
+
+        function drawCharts(data) {
+            // Prepare data for charts
+            let tempData = [['Time', 'BMP280 Temp (°C)', 'HTU21D Temp (°C)']];
+            let pressureData = [['Time', 'Pressure (hPa)']];
+            let humidityData = [['Time', 'Humidity (%)']];
+
+            data.reverse().forEach(row => {
+                tempData.push([row.timestamp, row.bmp280_temp, row.htu21d_temp]);
+                pressureData.push([row.timestamp, row.bmp280_pressure]);
+                humidityData.push([row.timestamp, row.htu21d_humidity]);
+            });
+
+            drawChart(tempData, 'temp_chart', 'Temperature Data', 'Temperature (°C)');
+            drawChart(pressureData, 'pressure_chart', 'Pressure Data', 'Pressure (hPa)');
+            drawChart(humidityData, 'humidity_chart', 'Humidity Data', 'Humidity (%)');
+        }
+
+        function drawChart(dataArray, elementId, title, vAxisTitle) {
+            let data = google.visualization.arrayToDataTable(dataArray);
+            let options = {
+                title: title,
+                curveType: 'function',
+                legend: { position: 'bottom' },
+                vAxis: { title: vAxisTitle }
+            };
+            let chart = new google.visualization.LineChart(document.getElementById(elementId));
+            chart.draw(data, options);
+        }
+    </script>
+</head>
+
+<body>
+    <h1>Sensor Data Monitoring</h1>
+    <div id="temp_chart" style="width: 900px; height: 500px;"></div>
+    <div id="pressure_chart" style="width: 900px; height: 500px;"></div>
+    <div id="humidity_chart" style="width: 900px; height: 500px;"></div>
+</body>
+
+</html>
