@@ -2,7 +2,8 @@
 CC = aarch64-linux-gnu-gcc
 
 # Compiler Flags
-CFLAGS = -Wall -Wextra -I. -Ii2c -Ihtu21d -Ibmp280 -Idb -lsqlite3
+CFLAGS = -Wall -Wextra -I. -Ii2c -Ihtu21d -Ibmp280 -Idb -Isqlite-autoconf-3490100/aarch64/include
+LDFLAGS=-Lsqlite-autoconf-3490100/aarch64/lib -lsqlite3
 
 # Directories
 OBJ_DIR = build
@@ -24,7 +25,7 @@ directories:
 
 # Linking step
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(OBJS) $(LDFLAGS)
 
 # Compile .c files into .o in the build directory
 $(OBJ_DIR)/%.o: %.c
