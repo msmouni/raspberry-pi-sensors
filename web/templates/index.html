@@ -6,7 +6,12 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script>
         google.charts.load('current', { 'packages': ['corechart'] });
-        google.charts.setOnLoadCallback(fetchData);
+        google.charts.setOnLoadCallback(initialize);
+
+        function initialize() {
+            fetchData(); // fetch data initially
+            setInterval(fetchData, 5000); // fetch data every 5 seconds
+        }
 
         function fetchData() {
             fetch('/data')
