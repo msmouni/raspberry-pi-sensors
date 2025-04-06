@@ -1,5 +1,6 @@
 from flask import Flask, render_template, jsonify
 import sqlite3
+import requests
 
 app = Flask(__name__)
 
@@ -27,6 +28,21 @@ def index():
 def data():
     sensor_data = get_sensor_data()
     return jsonify(sensor_data)
+
+@app.route('/external-weather')
+def external_weather():
+    # Example: Paris, France
+    lat, lon = 48.85, 2.35
+    url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current_weather=true"
+    response = requests.get(url)
+    data = response.json()
+
+    weather = data["current_weather"]
+    return jsonify({
+        "external_temp": weather["temperature"],
+        "external_windspeed": weather["windspeed"],
+        "external_time": weather["time"]
+    })
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
