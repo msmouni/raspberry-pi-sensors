@@ -2,29 +2,30 @@
 CC = aarch64-linux-gnu-gcc
 
 # Compiler Flags
-CFLAGS = -Wall -Wextra -I. -Ii2c -Ihtu21d -Ibmp280
+CFLAGS = -Wall -Wextra -I. -Ii2c -Ihtu21d -Ibmp280 -Idb -Isqlite-autoconf-3490100/aarch64/include
+LDFLAGS=-Lsqlite-autoconf-3490100/aarch64/lib -lsqlite3
 
 # Directories
 OBJ_DIR = build
 BIN_DIR = build/bin
 
 # Source Files
-SRCS = main.c i2c/i2c.c htu21d/htu21d.c bmp280/bmp280.c
+SRCS = main.c i2c/i2c.c htu21d/htu21d.c bmp280/bmp280.c db/db.c
 OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o)
 
 # Output Executable
-TARGET = $(BIN_DIR)/htu21d_app
+TARGET = $(BIN_DIR)/rpi_sensors
 
 # Default rule: Compile everything
 all: directories $(TARGET)
 
 # Ensure build/ and bin/ directories exist
 directories:
-	mkdir -p $(OBJ_DIR) $(BIN_DIR) $(OBJ_DIR)/i2c $(OBJ_DIR)/htu21d $(OBJ_DIR)/bmp280
+	mkdir -p $(OBJ_DIR) $(BIN_DIR) $(OBJ_DIR)/i2c $(OBJ_DIR)/htu21d $(OBJ_DIR)/bmp280 $(OBJ_DIR)/db
 
 # Linking step
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(OBJS) $(LDFLAGS)
 
 # Compile .c files into .o in the build directory
 $(OBJ_DIR)/%.o: %.c
