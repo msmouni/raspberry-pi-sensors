@@ -1,36 +1,65 @@
-# Compiler
-CC = aarch64-linux-gnu-gcc
+# -----------------------------
+# Compiler and Tools
+# -----------------------------
+CC := aarch64-linux-gnu-gcc
 
-# Compiler Flags
-CFLAGS = -Wall -Wextra -I. -Ii2c -Ihtu21d -Ibmp280 -Idb -Isqlite-autoconf-3490100/aarch64/include
-LDFLAGS=-Lsqlite-autoconf-3490100/aarch64/lib -lsqlite3
-
+# -----------------------------
 # Directories
-OBJ_DIR = build
-BIN_DIR = build/bin
+# -----------------------------
+SRC_DIRS := . i2c htu21d bmp280 db
+BUILD_DIR := build
+BIN_DIR := $(BUILD_DIR)/bin
+OBJ_DIR := $(BUILD_DIR)/obj
 
-# Source Files
-SRCS = main.c i2c/i2c.c htu21d/htu21d.c bmp280/bmp280.c db/db.c
-OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o)
+# -----------------------------
+# Compilation Flags
+# -----------------------------
+CFLAGS := -Wall -Wextra $(addprefix -I, $(SRC_DIRS)) -Isqlite-autoconf-3490100/aarch64/include
+LDFLAGS := -Lsqlite-autoconf-3490100/aarch64/lib -lsqlite3
 
+# -----------------------------
+# Source and Object Files
+# -----------------------------
+SRCS := main.c \
+        i2c/i2c.c \
+        htu21d/htu21d.c \
+        bmp280/bmp280.c \
+        db/db.c
+
+OBJS := $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRCS))
+
+# -----------------------------
 # Output Executable
-TARGET = $(BIN_DIR)/rpi_sensors
+# -----------------------------
+TARGET := $(BIN_DIR)/rpi_sensors
 
-# Default rule: Compile everything
+# -----------------------------
+# Default Target
+# -----------------------------
 all: directories $(TARGET)
 
-# Ensure build/ and bin/ directories exist
+# -----------------------------
+# Create necessary directories
+# -----------------------------
 directories:
 	mkdir -p $(OBJ_DIR) $(BIN_DIR) $(OBJ_DIR)/i2c $(OBJ_DIR)/htu21d $(OBJ_DIR)/bmp280 $(OBJ_DIR)/db
 
-# Linking step
-$(TARGET): $(OBJS)
+# -----------------------------
+# Link the final binary
+# -----------------------------
+$(TARGET): $(OBJS) | $(BIN_DIR)
 	$(CC) $(CFLAGS) -o $@ $(OBJS) $(LDFLAGS)
 
-# Compile .c files into .o in the build directory
-$(OBJ_DIR)/%.o: %.c
+# -----------------------------
+# Compile each .c into .o
+# -----------------------------
+$(OBJ_DIR)/%.o: %.c | $(OBJ_DIRS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Clean build and bin directories
+# -----------------------------
+# Clean
+# -----------------------------
 clean:
-	rm -rf $(OBJ_DIR) $(BIN_DIR)
+	rm -rf $(BUILD_DIR)
+
+.PHONY: all clean
