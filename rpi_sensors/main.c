@@ -8,7 +8,7 @@
 
 #define I2C_BUS "/dev/i2c-1"
 #define DB_FILE "data.db"
-#define DB_DATA_SIZE 10
+#define DB_DATA_SIZE 100
 
 volatile sig_atomic_t keep_running = 1; // Flag for shutdown
 
