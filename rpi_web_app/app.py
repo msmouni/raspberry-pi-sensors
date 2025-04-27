@@ -4,13 +4,13 @@ import requests
 
 app = Flask(__name__)
 
-DB_FILE = "data.db"
+DB_FILE = "var/lib/rpi_sensors_datadata.db"
 
 # Function to get the last 10 sensor records from the database
 def get_sensor_data():
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
-    cursor.execute("SELECT timestamp, bmp280_temperature, bmp280_pressure, htu21d_temperature, htu21d_humidity FROM SensorData ORDER BY timestamp DESC LIMIT 10")
+    cursor.execute("SELECT timestamp, bmp280_temperature, bmp280_pressure, htu21d_temperature, htu21d_humidity FROM SensorData ORDER BY timestamp DESC")
     data = cursor.fetchall()
     conn.close()
     
