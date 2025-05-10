@@ -1,0 +1,2 @@
+source "$BR2_EXTERNAL_project_customization_PATH/packages/rpi_sensors/Config.in"
+source "$BR2_EXTERNAL_project_customization_PATH/packages/rpi_web_app/Config.in"
