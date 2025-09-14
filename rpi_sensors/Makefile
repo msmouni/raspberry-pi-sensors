@@ -14,8 +14,8 @@ OBJ_DIR := $(BUILD_DIR)/obj
 # -----------------------------
 # Compilation Flags
 # -----------------------------
-CFLAGS := -Wall -Wextra $(addprefix -I, $(SRC_DIRS)) -Isqlite-autoconf-3490100/aarch64/include
-LDFLAGS := -Lsqlite-autoconf-3490100/aarch64/lib -lsqlite3
+CFLAGS := -Wall -Wextra $(addprefix -I, $(SRC_DIRS))
+LDFLAGS := -lsqlite3
 
 # -----------------------------
 # Source and Object Files
