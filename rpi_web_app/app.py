@@ -4,7 +4,7 @@ import requests
 
 app = Flask(__name__)
 
-DB_FILE = "var/lib/rpi_sensors_datadata.db"
+DB_FILE = "var/lib/rpi_sensors_data/data.db"
 
 # Function to get the last 10 sensor records from the database
 def get_sensor_data():
@@ -45,4 +45,4 @@ def external_weather():
     })
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False)
