@@ -1,0 +1,42 @@
+#!/bin/sh                                               
+                                                        
+IFACE="wlan0"                     
+CONF="/etc/wpa_supplicant.conf"                         
+                             
+start() {                                               
+    echo "Loading Wi-Fi driver..."
+    modprobe brcmfmac || true     
+                                  
+    echo "Waiting for $IFACE to appear..."
+    for i in $(seq 1 10); do                            
+        [ -d /sys/class/net/$IFACE ] && break
+        sleep 1                                         
+    done                                     
+                                          
+    echo "Starting wpa_supplicant..."        
+    wpa_supplicant -B -i "$IFACE" -c "$CONF" 
+                                     
+    echo "Waiting for Wi-Fi link..."         
+        for i in $(seq 1 15); do          
+            state=$(cat /sys/class/net/$IFACE/operstate 2>/dev/null || echo "down")
+            if [ "$state" = "up" ]; then     
+                break                                                              
+            fi                               
+            sleep 1                                                                
+        done                                                                       
+                                            
+    echo "Starting DHCP client..."                                                 
+    udhcpc -i "$IFACE" -q &                 
+}                                                                                  
+                                                                                   
+stop() {                                
+    killall wpa_supplicant 2>/dev/null || true                                     
+    killall udhcpc 2>/dev/null || true  
+}                                                                                  
+                                            
+case "$1" in                                  
+    start) start ;;                           
+    stop) stop ;;                     
+    restart) stop; sleep 1; start ;;                                               
+    *) echo "Usage: $0 {start|stop|restart}" ;;
+esac
