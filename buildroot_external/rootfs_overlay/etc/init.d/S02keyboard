@@ -1,0 +1,4 @@
+#!/bin/sh
+# Set AZERTY keyboard layout at boot
+
+loadkeys fr
