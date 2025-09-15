@@ -1,0 +1,30 @@
+name: Build Raspberry Pi Images
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build Raspberry Pi Images
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Build the project
+        run: |
+          ./build.sh
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: buildroot-images
+          path: buildroot/output/images/sdcard.img
